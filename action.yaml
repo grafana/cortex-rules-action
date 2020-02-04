@@ -1,0 +1,29 @@
+name: cortextool-sync
+author: jtlisi
+description: "Sync/Diff Prometheus Rules files to with a Cortex cluster."
+inputs:
+  rules_dir_path:
+    description: "Path to a directory containing YAML files containing Prometheus rules"
+    default: "./"
+  endpoint:
+    description: "Endpoint for the Cortex cluster"
+    required: true
+  instance_id:
+    description: "Designate instance ID of the "
+    required: true
+  action:
+    description: "Specify whether to diff rules or sync rules. Either 'sync' or 'diff' must be specified"
+    default: "diff"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  env:
+    CORTEX_ADDRESS: ${{ inputs.endpoint }} 
+    CORTEX_TENANT_ID: ${{ inputs.instance_id }}
+    CORTEX_API_KEY: ${{ secrets.cortex_api_key }}
+  args:
+    - ${{ inputs.action }}
+    - ${{ inputs.rules_path }}
+branding:
+  icon: "upload"  
+  color: "blue"
