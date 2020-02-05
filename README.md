@@ -36,10 +36,10 @@ Running the action with the `diff` command will crawl the specified `RULES_DIR` 
 
 ### Pull Request Diff
 
-The following workflow will run a diff on every pull request against the repo.
+The following workflow will run a diff on every pull request against the repo and print the summary as a comment in the associated pull request:
 
 ```yaml
-name: diff_rules_pr
+name: diff_rules_pull_request
 on: [pull_request]
 jobs:
   diff-pr:
@@ -47,7 +47,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: diff-rules
+      - name: Diff Rules
+        id: diff_rules
         uses: grafana//cortex-rules-action@master
         env:
           CORTEX_ADDRESS: https://example-cluster.com/
@@ -55,6 +56,12 @@ jobs:
           CORTEX_API_KEY: ${{ secrets.CORTEX_API_KEY }} # Encrypted Github Secret https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets
           ACTION: diff
           RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo 
+      - name: comment PR
+        uses: unsplash/comment-on-pr@v1.2.0 # https://github.com/unsplash/comment-on-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          msg: "${{ steps.diff_rules.outputs.summary }}"
 ```
 
 ### Master Sync

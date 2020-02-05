@@ -41,6 +41,7 @@ case "${ACTION}" in
     ;;
 esac
 
+echo "${OUTPUT}"
 echo ::set-output name=detailed::"${OUTPUT}"
 SUMMARY=$(echo "${OUTPUT}" | grep Summary)
 echo ::set-output name=summary::"${SUMMARY}"
