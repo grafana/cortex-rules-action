@@ -28,9 +28,11 @@ Running the action with the `diff` command will crawl the specified `RULES_DIR` 
 
 ### `summary`
 
+The `summary` output variable returned by this action is a string denoting the number of rule groups either created/updated/deleted. If the action is set to `diff`, these values are only hypothetical.
+
 ### `detailed`
 
-
+The `detailed` output variable returned by this action is the full output of the command.
 
 ## Example Workflows
 
@@ -49,7 +51,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Diff Rules
         id: diff_rules
-        uses: grafana//cortex-rules-action@master
+        uses: grafana//cortex-rules-action@v0.1.0
         env:
           CORTEX_ADDRESS: https://example-cluster.com/
           CORTEX_TENANT_ID: 1
@@ -61,10 +63,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          msg: "${{ steps.diff_rules.outputs.summary }}"
+          msg: "${{ steps.diff_rules.outputs.summary }}" # summary could be replaced with detailed for a more granular view
 ```
 
 ### Master Sync
+
+The following workflow will sync the rule files in the `master` branch with the configured Cortex cluster.
 
 ```yaml
 name: sync_rules_master
@@ -81,7 +85,7 @@ jobs:
         with:
           ref: master
       - name: sync-rules
-        uses: grafana//cortex-rules-action@master
+        uses: grafana//cortex-rules-action@v0.1.0
         env:
           CORTEX_ADDRESS: https://example-cluster.com/
           CORTEX_TENANT_ID: 1
