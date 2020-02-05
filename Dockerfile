@@ -1,4 +1,4 @@
-FROM grafana/cortextool:2020_format_diff-9bce61d
+FROM grafana/cortextool:v0.1.3
 
 COPY entrypoint.sh /entrypoint.sh
 
