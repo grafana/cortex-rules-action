@@ -43,11 +43,6 @@ esac
 
 echo ::set-output name=detailed::"${OUTPUT}"
 SUMMARY=$(echo "${OUTPUT}" | grep Summary)
-if [ "${SUMMARY}" != "" ]; then
-  echo ::set-output name=summary::${SUMMARY}
-else
-  echo ::set-output name=summary::"No Summary"
-  echo ::warning::"Missing Summary"
-fi
+echo ::set-output name=summary::"${SUMMARY}"
 
 exit $STATUS
