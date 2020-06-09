@@ -1,38 +1,51 @@
-# Cortextool Sync/Diff Github Action
+# Cortextool Github Action
 
-This action is used to sync rules to a [Cortex](https://github.com/cortexproject/cortex) cluster.
+This action is used to lint, prepare, verify, diff, and sync rules to a [Cortex](https://github.com/cortexproject/cortex) cluster.
 
 ## Environment Variables
 
-This action is configured using environment variables defined in the workflow job. The following variables can be configured.
+This action is configured using environment variables defined in the workflow. The following variables can be configured.
 
 | Name               | Description                                                                                                                                                                                                                                | Required | Default |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------- |
-| `CORTEX_ADDRESS`   | URL address for the target Cortex cluster                                                                                                                                                                                                  | `true`   | N/A     |
-| `CORTEX_TENANT_ID` | ID for the desired tenant in the target Cortex cluster                                                                                                                                                                                     | `true`   | N/A     |
-| `CORTEX_API_KEY`   | Optional password that is required for password protected Cortex clusters. An encrypted github secret is recommended. https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets | `false`  | N/A     |
-| `ACTION`           | Action to take when syncing rules. Either `diff` or `sync`.                                                                                                                                                                                | `false`  | `diff`  |
-| `RULES_DIR`        | Comma-separated list of directories to walk in order to source rules files.                                                                                                                                                                | `false`  | `./`    |
+| `CORTEX_ADDRESS`   | URL address for the target Cortex cluster                                                                                                                                                                                                  | `false`  | N/A     |
+| `CORTEX_TENANT_ID` | ID for the desired tenant in the target Cortex cluster                                                                                                                                                                                     | `false`  | N/A     |
+| `CORTEX_API_KEY`   | Optional password that is required for password protected Cortex clusters. An encrypted [github secret](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets ) is recommended. | `false`  | N/A     |
+| `ACTION`           | Which action to take. One of `lint`, `prepare`, `check`, `diff` or `sync`                                                                                                                                                                  | `true`   | N/A     |
+| `RULES_DIR`        | Comma-separated list of directories to walk in order to source rules files                                                                                                                                                                 | `false`  | `./`    |
 
 ## Actions
 
+All actions will crawl the specified `RULES_DIR` for Prometheus rules and alerts files with a `yaml`/`yml` extension.
+
 ### `diff`
 
-Running the action with the `diff` command will crawl the specified `RULES_DIR` for Prometheus rules files with a `yaml`/`yml` extension and output the differences in the configured files and the currently configured ruleset in a Cortex cluster. It will output the required operations in order to make the running Cortex cluster match the rules configured in the directory. It will **not create/update/delete any rules** currently running in the Cortex cluster.
+Outputs the differences in the configured files and the currently configured ruleset in a Cortex cluster. It will output the required operations in order to make the running Cortex cluster match the rules configured in the directory. It will **not create/update/delete any rules** currently running in the Cortex cluster.
 
 ### `sync`
 
-Running the action with the `diff` command will crawl the specified `RULES_DIR` for `yaml`/`yml` Prometheus rules files and reconcile the differences with the sourced rules and the rules currently running in a configured Cortex cluster. It **will create/update/delete rules** currently running in Cortex to match what is configured in the files in the provided directory.
+Reconcile the differences with the sourced rules and the rules currently running in a configured Cortex cluster. It **will create/update/delete rules** currently running in Cortex to match what is configured in the files in the provided directory.
+
+### `lint`
+
+Lints a rules file(s). The linter's aim is not to verify correctness but just YAML and PromQL expression formatting within the rule file(s). The linting happens in-place within the specified file(s). Does not interact with your Cortex cluster.
+
+### `prepare`
+Prepares a rules file(s) for upload to Cortex. It lints all your PromQL expressions and adds a `cluster` label to your PromQL query aggregations in the file. Prepare modifies the file(s) in-place. Does not interact with your Cortex cluster.
+
+### `check`
+
+Checks rules fuile(s) against the recommended [best practices](https://prometheus.io/docs/practices/rules/) for rules. Does not interact with your Cortex cluster.
 
 ## Outputs
 
 ### `summary`
 
-The `summary` output variable returned by this action is a string denoting the number of rule groups either created/updated/deleted. If the action is set to `diff`, these values are only hypothetical.
+The `summary` output variable is a string denoting the output summary of the action, if there is one.
 
 ### `detailed`
 
-The `detailed` output variable returned by this action is the full output of the command.
+The `detailed` output variable returned by this action is the full output of the command executed.
 
 ## Example Workflows
 
@@ -90,6 +103,6 @@ jobs:
           CORTEX_ADDRESS: https://example-cluster.com/
           CORTEX_TENANT_ID: 1
           CORTEX_API_KEY: ${{ secrets.CORTEX_API_KEY }} # Encrypted Github Secret https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets
-          ACTION: diff
+          ACTION: sync
           RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo 
 ```
