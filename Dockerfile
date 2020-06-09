@@ -1,4 +1,4 @@
-FROM grafana/cortextool:v0.1.4
+FROM grafana/cortextool:v0.2.1
 
 COPY entrypoint.sh /entrypoint.sh
 
