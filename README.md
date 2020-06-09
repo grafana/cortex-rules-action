@@ -28,7 +28,7 @@ Reconcile the differences with the sourced rules and the rules currently running
 
 ### `lint`
 
-Lints a rules file(s). The linter's aim is not to verify correctness but just YAML and PromQL expression formatting within the rule file(s). The linting happens in-place within the specified file(s). Does not interact with your Cortex cluster.
+Lints a rules file(s). The linter's aim is not to verify correctness but to fix YAML and PromQL expression formatting within the rule file(s). The linting happens in-place within the specified file(s). Does not interact with your Cortex cluster.
 
 ### `prepare`
 Prepares a rules file(s) for upload to Cortex. It lints all your PromQL expressions and adds a `cluster` label to your PromQL query aggregations in the file. Prepare modifies the file(s) in-place. Does not interact with your Cortex cluster.
