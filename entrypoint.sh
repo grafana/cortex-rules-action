@@ -39,24 +39,24 @@ fi
 case "${ACTION}" in
   $SYNC_CMD)
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}")
+    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   $DIFF_CMD)
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}")
+    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   $LINT_CMD)
-    OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}")
+    OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   $PREPARE_CMD)
-    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}")
+    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   $CHECK_CMD)
-    OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}")
+    OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   *)

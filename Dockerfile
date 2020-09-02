@@ -1,4 +1,4 @@
-FROM grafana/cortextool:v0.2.2
+FROM owend/cortextool:loki-loading-012153a
 
 COPY entrypoint.sh /entrypoint.sh
 
