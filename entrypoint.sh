@@ -25,6 +25,7 @@ CHECK_CMD=check
 PREPARE_CMD=prepare
 SYNC_CMD=sync
 DIFF_CMD=diff
+PRINT_CMD=print
 
 if [ -z "${RULES_DIR}" ]; then
   echo "RULES_DIR not set, using './' as a default."
@@ -59,6 +60,10 @@ case "${ACTION}" in
     OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
+  $PRINT_CMD)
+      OUTPUT=$(/usr/bin/cortextool rules print "$@")
+      STATUS=$?
+      ;;
   *)
     err "Unexpected action '${ACTION}'"
     exit 1
