@@ -25,6 +25,7 @@ CHECK_CMD=check
 PREPARE_CMD=prepare
 SYNC_CMD=sync
 DIFF_CMD=diff
+PRINT_CMD=print
 
 if [ -z "${RULES_DIR}" ]; then
   echo "RULES_DIR not set, using './' as a default."
@@ -39,26 +40,30 @@ fi
 case "${ACTION}" in
   $SYNC_CMD)
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}")
+    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   $DIFF_CMD)
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}")
+    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   $LINT_CMD)
-    OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}")
+    OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   $PREPARE_CMD)
-    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}")
+    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   $CHECK_CMD)
-    OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}")
+    OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
+  $PRINT_CMD)
+      OUTPUT=$(/usr/bin/cortextool rules print "$@")
+      STATUS=$?
+      ;;
   *)
     err "Unexpected action '${ACTION}'"
     exit 1

@@ -35,7 +35,11 @@ Prepares a rules file(s) for upload to Cortex. It lints all your PromQL expressi
 
 ### `check`
 
-Checks rules fuile(s) against the recommended [best practices](https://prometheus.io/docs/practices/rules/) for rules. Does not interact with your Cortex cluster.
+Checks rules file(s) against the recommended [best practices](https://prometheus.io/docs/practices/rules/) for rules. Does not interact with your Cortex cluster.
+
+### `print`
+
+fetch & print rules from the Cortex cluster.
 
 ## Outputs
 
