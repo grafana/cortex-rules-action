@@ -76,7 +76,7 @@ jobs:
           CORTEX_TENANT_ID: 1
           CORTEX_API_KEY: ${{ secrets.CORTEX_API_KEY }} # Encrypted Github Secret https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets
           ACTION: diff
-          RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo 
+          RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo
       - name: comment PR
         uses: unsplash/comment-on-pr@v1.2.0 # https://github.com/unsplash/comment-on-pr
         env:
@@ -115,7 +115,7 @@ jobs:
 
 The following workflow will sync the AlertManager configuration file in the `master` branch against the configured Cortex cluster
 ```yaml
-name: sync_rules_master
+name: sync_alertmanager_master
 on:
  push:
    branches:
