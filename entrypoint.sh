@@ -40,7 +40,6 @@ fi
 if [ ${COMPONENT} == "ALERTMANAGER" ] && [ -z "${ALERTMANAGER_CONFIG_PATH}" ]; then
   echo "No ALERTMANAGER_CONFIG_PATH variable set. Defaulting to ./alertManager.yml"
   ALERTMANAGER_CONFIG_PATH=./alertManager.yml
-  exit 1
 fi
 
 if [ -z "${ACTION}" ]; then
