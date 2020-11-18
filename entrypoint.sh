@@ -38,7 +38,8 @@ if [ -z "${RULES_DIR}" ]; then
 fi
 
 if [ ${COMPONENT} == "ALERTMANAGER" ] && [ -z "${ALERTMANAGER_CONFIG_PATH}" ]; then
-  echo "When using the AlertManager component you must set ALERTMANAGER_CONFIG_PATH"
+  echo "No ALERTMANAGER_CONFIG_PATH variable set. Defaulting to ./alertManager.yml"
+  ALERTMANAGER_CONFIG_PATH=./alertManager.yml
   exit 1
 fi
 
