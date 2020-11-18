@@ -1,4 +1,3 @@
-
 # Cortextool Github Action
 
 This action is used to lint, prepare, verify, diff, and sync rules to a [Cortex](https://github.com/cortexproject/cortex) cluster.
