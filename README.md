@@ -9,10 +9,14 @@ This action is configured using environment variables defined in the workflow. T
 | Name               | Description                                                                                                                                                                                                                                | Required | Default |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------- |
 | `CORTEX_ADDRESS`   | URL address for the target Cortex cluster                                                                                                                                                                                                  | `false`  | N/A     |
-| `CORTEX_TENANT_ID` | ID for the desired tenant in the target Cortex cluster                                                                                                                                                                                     | `false`  | N/A     |
-| `CORTEX_API_KEY`   | Optional password that is required for password protected Cortex clusters. An encrypted [github secret](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets ) is recommended. | `false`  | N/A     |
+| `CORTEX_TENANT_ID` | ID for the desired tenant in the target Cortex cluster. Used as the username under HTTP Basic authentication.                                                                                                                                                                                     | `false`  | N/A     |
+| `CORTEX_API_KEY`   | Optional password that is required for password-protected Cortex clusters. An encrypted [github secret](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets ) is recommended. Used as the password under HTTP Basic authentication. | `false`  | N/A     |
 | `ACTION`           | Which action to take. One of `lint`, `prepare`, `check`, `diff` or `sync`                                                                                                                                                                  | `true`   | N/A     |
 | `RULES_DIR`        | Comma-separated list of directories to walk in order to source rules files                                                                                                                                                                 | `false`  | `./`    |
+
+## Authentication
+
+This GitHub Action uses [`cortextool`](https://github.com/grafana/cortex-tools) under the hood, `cortextool` uses HTTP Basic authentication against a Cortex cluster. The variable `CORTEX_TENANT_ID` is used as the username and `CORTEX_API_KEY` as the password.
 
 ## Actions
 
@@ -74,7 +78,7 @@ jobs:
           CORTEX_TENANT_ID: 1
           CORTEX_API_KEY: ${{ secrets.CORTEX_API_KEY }} # Encrypted Github Secret https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets
           ACTION: diff
-          RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo 
+          RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo
       - name: comment PR
         uses: unsplash/comment-on-pr@v1.2.0 # https://github.com/unsplash/comment-on-pr
         env:
@@ -108,5 +112,5 @@ jobs:
           CORTEX_TENANT_ID: 1
           CORTEX_API_KEY: ${{ secrets.CORTEX_API_KEY }} # Encrypted Github Secret https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets
           ACTION: sync
-          RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo 
+          RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo
 ```
