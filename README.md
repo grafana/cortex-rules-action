@@ -16,7 +16,7 @@ This action is configured using environment variables defined in the workflow. T
 
 ## Authentication
 
-Currently cortextool only support basic authentication against a Cortex cluster. To enable basic authentication on this action ensure that a user with the `CORTEX_TENANT_ID` variable username exists on the basic auth proxy and set the `CORTEX_API_KEY` as the password.
+This GitHub Action uses [`cortextool`](https://github.com/grafana/cortex-tools) under the hood, `cortextool` uses HTTP Basic authentication against a Cortex cluster. The variable `CORTEX_TENANT_ID` is used as the username and `CORTEX_API_KEY` as the password.
 
 ## Actions
 
