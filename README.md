@@ -13,6 +13,8 @@ This action is configured using environment variables defined in the workflow. T
 | `CORTEX_API_KEY`   | Optional password that is required for password-protected Cortex clusters. An encrypted [github secret](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets ) is recommended. Used as the password under HTTP Basic authentication. | `false`  | N/A     |
 | `ACTION`           | Which action to take. One of `lint`, `prepare`, `check`, `diff` or `sync`                                                                                                                                                                  | `true`   | N/A     |
 | `RULES_DIR`        | Comma-separated list of directories to walk in order to source rules files                                                                                                                                                                 | `false`  | `./`    |
+|	`COMPONENT`		 | `RULER` or `ALERTMANAGER`. This dictates whether to sync ruler rulegroups or AlertManager configurations	| `true`	|	N/A		|
+| `ALERTMANAGER_CONFIG_PATH` | Path to the tenants AlertManager configuration | `true` If `COMPONENT` is set to `ALERTMANAGER` | `./alertManager.yml`
 
 ## Authentication
 
@@ -114,3 +116,28 @@ jobs:
           ACTION: sync
           RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo
 ```
+
+The following workflow will sync the AlertManager configuration file in the `master` branch against the configured Cortex cluster
+```yaml
+name: sync_alertmanager_master
+on:
+ push:
+   branches:
+     - master
+jobs:
+  sync-master:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: sync-alertmanager
+        uses: grafana//cortex-rules-action@v0.1.1
+        env:
+          CORTEX_ADDRESS: https://example-cluster.com/
+          CORTEX_TENANT_ID: 1
+          CORTEX_API_KEY: ${{ secrets.CORTEX_API_KEY }} # Encrypted Github Secret https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets
+          ACTION: sync
+          COMPONENT: ALERTMANAGER
+          ALERTMANAGER_CONFIG_PATH: "./alertmanager/config.yml" # In this example the AlertManager config is stored in the `alertmanager/` directory in the repository```
