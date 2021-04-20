@@ -53,7 +53,7 @@ case "${ACTION}" in
     STATUS=$?
     ;;
   $PREPARE_CMD)
-    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" "$@")
+    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" --label-excluded-rule-groups="${LABEL_EXCLUDED_RULE_GROUPS}" "$@")
     STATUS=$?
     ;;
   $CHECK_CMD)
