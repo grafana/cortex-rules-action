@@ -1,4 +1,4 @@
-FROM grafana/cortex-tools:v0.7.1
+FROM grafana/cortex-tools:v0.10.0
 
 COPY entrypoint.sh /entrypoint.sh
 
