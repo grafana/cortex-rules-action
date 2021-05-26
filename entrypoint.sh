@@ -45,7 +45,7 @@ case "${ACTION}" in
     ;;
   $DIFF_CMD)
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" "$@")
+    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" --disable-color "$@")
     STATUS=$?
     ;;
   $LINT_CMD)
@@ -61,7 +61,7 @@ case "${ACTION}" in
     STATUS=$?
     ;;
   $PRINT_CMD)
-      OUTPUT=$(/usr/bin/cortextool rules print "$@")
+      OUTPUT=$(/usr/bin/cortextool rules print --disable-color "$@")
       STATUS=$?
       ;;
   *)
