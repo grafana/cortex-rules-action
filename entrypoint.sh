@@ -71,7 +71,10 @@ case "${ACTION}" in
 esac
 
 echo "${OUTPUT}"
-echo ::set-output name=detailed::"${OUTPUT}"
+SINGLE_LINE_OUTPUT="${OUTPUT//'%'/'%25'}"
+SINGLE_LINE_OUTPUT="${SINGLE_LINE_OUTPUT//$'\n'/'%0A'}"
+SINGLE_LINE_OUTPUT="${SINGLE_LINE_OUTPUT//$'\r'/'%0D'}"
+echo ::set-output name=detailed::"${SINGLE_LINE_OUTPUT}"
 SUMMARY=$(echo "${OUTPUT}" | grep Summary)
 echo ::set-output name=summary::"${SUMMARY}"
 
