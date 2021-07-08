@@ -40,12 +40,12 @@ fi
 case "${ACTION}" in
   $SYNC_CMD)
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" "$@")
+    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} "$@")
     STATUS=$?
     ;;
   $DIFF_CMD)
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" --disable-color "$@")
+    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} --disable-color "$@")
     STATUS=$?
     ;;
   $LINT_CMD)

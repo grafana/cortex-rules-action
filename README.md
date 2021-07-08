@@ -14,6 +14,7 @@ This action is configured using environment variables defined in the workflow. T
 | `ACTION`                     | Which action to take. One of `lint`, `prepare`, `check`, `diff` or `sync`                                                                                                                                                                  | `true`   | N/A     |
 | `RULES_DIR`                  | Comma-separated list of directories to walk in order to source rules files                                                                                                                                                                 | `false`  | `./`    |
 | `LABEL_EXCLUDED_RULE_GROUPS` | Comma separated list of rule group names to exclude when including the configured label to aggregations. This option is supported only by the `prepare` action.                                                                            | `false`  | N/A     |
+| `NAMESPACES`                 | Comma-separated list of namespaces to use                                                                                                                                                                                                  | `false`  | N/A     |
 
 ## Authentication
 
