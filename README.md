@@ -74,7 +74,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Diff Rules
         id: diff_rules
-        uses: grafana//cortex-rules-action@v0.1.1
+        uses: grafana//cortex-rules-action@v0.8.0
         env:
           CORTEX_ADDRESS: https://example-cluster.com/
           CORTEX_TENANT_ID: 1
@@ -108,7 +108,7 @@ jobs:
         with:
           ref: master
       - name: sync-rules
-        uses: grafana//cortex-rules-action@v0.1.1
+        uses: grafana//cortex-rules-action@v0.8.0
         env:
           CORTEX_ADDRESS: https://example-cluster.com/
           CORTEX_TENANT_ID: 1
