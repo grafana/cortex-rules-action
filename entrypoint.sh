@@ -41,34 +41,28 @@ fi
 case "${ACTION}" in
   "$SYNC_CMD")
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} "$@" | \
-        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
+    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} "$@")
     STATUS=$?
     ;;
   "$DIFF_CMD")
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} --disable-color "$@" | \
-        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
+    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} --disable-color "$@")
     STATUS=$?
     ;;
   "$LINT_CMD")
-    OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}" "$@" | \
-        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
+    OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   "$PREPARE_CMD")
-    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" --label-excluded-rule-groups="${LABEL_EXCLUDED_RULE_GROUPS}" "$@" | \
-        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
+    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" --label-excluded-rule-groups="${LABEL_EXCLUDED_RULE_GROUPS}" "$@")
     STATUS=$?
     ;;
   "$CHECK_CMD")
-    OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}" "$@" | \
-        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
+    OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   "$PRINT_CMD")
-      OUTPUT=$(/usr/bin/cortextool rules print --disable-color "$@" | \
-        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
+      OUTPUT=$(/usr/bin/cortextool rules print --disable-color "$@")
       STATUS=$?
       ;;
   *)
@@ -77,7 +71,8 @@ case "${ACTION}" in
     ;;
 esac
 
-echo ::set-output name=detailed::"${OUTPUT}"
+SINGLE_LINE_OUTPUT=$(echo "${OUTPUT}" | awk 'BEGIN {RS=""}{gsub(/%/,"%25") gsub(/\r/, "%0D") gsub(/\n/, "%0A")}1')
+echo ::set-output name=detailed::"${SINGLE_LINE_OUTPUT}"
 SUMMARY=$(echo "${OUTPUT}" | grep Summary)
 echo ::set-output name=summary::"${SUMMARY}"
 
