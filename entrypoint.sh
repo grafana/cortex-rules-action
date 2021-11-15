@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck shell=dash
 #
 # Interact with the Cortex Ruler API using the cortextool
 
@@ -24,7 +25,7 @@ LINT_CMD=lint
 CHECK_CMD=check
 PREPARE_CMD=prepare
 SYNC_CMD=sync
-DIFF_CMD=diff
+DIFF_CMD="diff"
 PRINT_CMD=print
 
 if [ -z "${RULES_DIR}" ]; then
@@ -38,30 +39,36 @@ if [ -z "${ACTION}" ]; then
 fi
 
 case "${ACTION}" in
-  $SYNC_CMD)
+  "$SYNC_CMD")
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} "$@")
+    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} "$@" | \
+        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
     STATUS=$?
     ;;
-  $DIFF_CMD)
+  "$DIFF_CMD")
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} --disable-color "$@")
+    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} --disable-color "$@" | \
+        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
     STATUS=$?
     ;;
-  $LINT_CMD)
-    OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}" "$@")
+  "$LINT_CMD")
+    OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}" "$@" | \
+        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
     STATUS=$?
     ;;
-  $PREPARE_CMD)
-    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" --label-excluded-rule-groups="${LABEL_EXCLUDED_RULE_GROUPS}" "$@")
+  "$PREPARE_CMD")
+    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" --label-excluded-rule-groups="${LABEL_EXCLUDED_RULE_GROUPS}" "$@" | \
+        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
     STATUS=$?
     ;;
-  $CHECK_CMD)
-    OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}" "$@")
+  "$CHECK_CMD")
+    OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}" "$@" | \
+        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
     STATUS=$?
     ;;
-  $PRINT_CMD)
-      OUTPUT=$(/usr/bin/cortextool rules print --disable-color "$@")
+  "$PRINT_CMD")
+      OUTPUT=$(/usr/bin/cortextool rules print --disable-color "$@" | \
+        awk 'BEGIN {RS=""}{gsub(/\r/, "%0D") gsub(/\n/, "%0A") gsub(/%/,"%25")}1')
       STATUS=$?
       ;;
   *)
@@ -70,11 +77,7 @@ case "${ACTION}" in
     ;;
 esac
 
-echo "${OUTPUT}"
-SINGLE_LINE_OUTPUT="${OUTPUT//'%'/'%25'}"
-SINGLE_LINE_OUTPUT="${SINGLE_LINE_OUTPUT//$'\n'/'%0A'}"
-SINGLE_LINE_OUTPUT="${SINGLE_LINE_OUTPUT//$'\r'/'%0D'}"
-echo ::set-output name=detailed::"${SINGLE_LINE_OUTPUT}"
+echo ::set-output name=detailed::"${OUTPUT}"
 SUMMARY=$(echo "${OUTPUT}" | grep Summary)
 echo ::set-output name=summary::"${SUMMARY}"
 
