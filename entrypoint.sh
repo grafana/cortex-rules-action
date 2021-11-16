@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck shell=dash
 #
 # Interact with the Cortex Ruler API using the cortextool
 
@@ -24,7 +25,7 @@ LINT_CMD=lint
 CHECK_CMD=check
 PREPARE_CMD=prepare
 SYNC_CMD=sync
-DIFF_CMD=diff
+DIFF_CMD="diff"
 PRINT_CMD=print
 
 if [ -z "${RULES_DIR}" ]; then
@@ -38,29 +39,29 @@ if [ -z "${ACTION}" ]; then
 fi
 
 case "${ACTION}" in
-  $SYNC_CMD)
+  "$SYNC_CMD")
     verifyTenantAndAddress
     OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} "$@")
     STATUS=$?
     ;;
-  $DIFF_CMD)
+  "$DIFF_CMD")
     verifyTenantAndAddress
     OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} --disable-color "$@")
     STATUS=$?
     ;;
-  $LINT_CMD)
+  "$LINT_CMD")
     OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
-  $PREPARE_CMD)
+  "$PREPARE_CMD")
     OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" --label-excluded-rule-groups="${LABEL_EXCLUDED_RULE_GROUPS}" "$@")
     STATUS=$?
     ;;
-  $CHECK_CMD)
+  "$CHECK_CMD")
     OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
-  $PRINT_CMD)
+  "$PRINT_CMD")
       OUTPUT=$(/usr/bin/cortextool rules print --disable-color "$@")
       STATUS=$?
       ;;
@@ -70,10 +71,7 @@ case "${ACTION}" in
     ;;
 esac
 
-echo "${OUTPUT}"
-SINGLE_LINE_OUTPUT="${OUTPUT//'%'/'%25'}"
-SINGLE_LINE_OUTPUT="${SINGLE_LINE_OUTPUT//$'\n'/'%0A'}"
-SINGLE_LINE_OUTPUT="${SINGLE_LINE_OUTPUT//$'\r'/'%0D'}"
+SINGLE_LINE_OUTPUT=$(echo "${OUTPUT}" | awk 'BEGIN { RS="" } { gsub(/%/, "%25"); gsub(/\r/, "%0D"); gsub(/\n/, "%0A") } { print }')
 echo ::set-output name=detailed::"${SINGLE_LINE_OUTPUT}"
 SUMMARY=$(echo "${OUTPUT}" | grep Summary)
 echo ::set-output name=summary::"${SUMMARY}"
