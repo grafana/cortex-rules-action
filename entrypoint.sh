@@ -71,7 +71,7 @@ case "${ACTION}" in
     ;;
 esac
 
-SINGLE_LINE_OUTPUT=$(echo "${OUTPUT}" | awk 'BEGIN {RS=""}{gsub(/%/,"%25") gsub(/\r/, "%0D") gsub(/\n/, "%0A")}1')
+SINGLE_LINE_OUTPUT=$(echo "${OUTPUT}" | awk 'BEGIN {RS=""}{gsub(/%/,"%25"); gsub(/\r/, "%0D"); gsub(/\n/, "%0A"); print $0}')
 echo ::set-output name=detailed::"${SINGLE_LINE_OUTPUT}"
 SUMMARY=$(echo "${OUTPUT}" | grep Summary)
 echo ::set-output name=summary::"${SUMMARY}"
