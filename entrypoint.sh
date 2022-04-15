@@ -1,22 +1,22 @@
 #!/bin/sh
 # shellcheck shell=dash
 #
-# Interact with the Cortex Ruler API using the cortextool
+# Interact with the Mimir Ruler API using mimirtool.
 
 err() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: " + "$@" >&2
 }
 
 # For commands that interact with the server, we need to verify that the
-# CORTEX_TENANT_ID and CORTEX_ADDRESS are set.
+# MIMIR_TENANT_ID and MIMIR_ADDRESS are set.
 verifyTenantAndAddress() {
-  if [ -z "${CORTEX_TENANT_ID}" ]; then
-    err "CORTEX_TENANT_ID has not been set."
+  if [ -z "${MIMIR_TENANT_ID}" ]; then
+    err "MIMIR_TENANT_ID has not been set."
     exit 1
   fi
 
-  if [ -z "${CORTEX_ADDRESS}" ]; then
-    err "CORTEX_ADDRESS has not been set."
+  if [ -z "${MIMIR_ADDRESS}" ]; then
+    err "MIMIR_ADDRESS has not been set."
     exit 1
   fi
 }
@@ -41,28 +41,28 @@ fi
 case "${ACTION}" in
   "$SYNC_CMD")
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} "$@")
+    OUTPUT=$(/bin/mimirtool rules sync --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} "$@")
     STATUS=$?
     ;;
   "$DIFF_CMD")
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} --disable-color "$@")
+    OUTPUT=$(/bin/mimirtool rules diff --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} --disable-color "$@")
     STATUS=$?
     ;;
   "$LINT_CMD")
-    OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}" "$@")
+    OUTPUT=$(/bin/mimirtool rules lint --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   "$PREPARE_CMD")
-    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" --label-excluded-rule-groups="${LABEL_EXCLUDED_RULE_GROUPS}" "$@")
+    OUTPUT=$(/bin/mimirtool rules prepare -i --rule-dirs="${RULES_DIR}" --label-excluded-rule-groups="${LABEL_EXCLUDED_RULE_GROUPS}" "$@")
     STATUS=$?
     ;;
   "$CHECK_CMD")
-    OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}" "$@")
+    OUTPUT=$(/bin/mimirtool rules check --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   "$PRINT_CMD")
-      OUTPUT=$(/usr/bin/cortextool rules print --disable-color "$@")
+      OUTPUT=$(/bin/mimirtool rules print --disable-color "$@")
       STATUS=$?
       ;;
   *)

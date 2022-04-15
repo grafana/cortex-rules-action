@@ -1,6 +1,6 @@
-# Cortextool Github Action
+# Mimirtool Github Action
 
-This action is used to lint, prepare, verify, diff, and sync rules to a [Cortex](https://github.com/cortexproject/cortex) cluster.
+This action is used to lint, prepare, verify, diff, and sync rules to a [Grafana Mimir](https://github.com/grafana/mimir) cluster.
 
 ## Environment Variables
 
@@ -8,9 +8,9 @@ This action is configured using environment variables defined in the workflow. T
 
 | Name                         | Description                                                                                                                                                                                                                                | Required | Default |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------- |
-| `CORTEX_ADDRESS`             | URL address for the target Cortex cluster                                                                                                                                                                                                  | `false`  | N/A     |
-| `CORTEX_TENANT_ID`           | ID for the desired tenant in the target Cortex cluster. Used as the username under HTTP Basic authentication.                                                                                                                                                                                     | `false`  | N/A     |
-| `CORTEX_API_KEY`             | Optional password that is required for password-protected Cortex clusters. An encrypted [github secret](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets ) is recommended. Used as the password under HTTP Basic authentication. | `false`  | N/A     |
+| `MIMIR_ADDRESS`             | URL address for the target Mimir cluster                                                                                                                                                                                                  | `false`  | N/A     |
+| `MIMIR_TENANT_ID`           | ID for the desired tenant in the target Mimir cluster. Used as the username under HTTP Basic authentication.                                                                                                                                                                                     | `false`  | N/A     |
+| `MIMIR_API_KEY`             | Optional password that is required for password-protected Mimir clusters. An encrypted [github secret](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets ) is recommended. Used as the password under HTTP Basic authentication. | `false`  | N/A     |
 | `ACTION`                     | Which action to take. One of `lint`, `prepare`, `check`, `diff` or `sync`                                                                                                                                                                  | `true`   | N/A     |
 | `RULES_DIR`                  | Comma-separated list of directories to walk in order to source rules files                                                                                                                                                                 | `false`  | `./`    |
 | `LABEL_EXCLUDED_RULE_GROUPS` | Comma separated list of rule group names to exclude when including the configured label to aggregations. This option is supported only by the `prepare` action.                                                                            | `false`  | N/A     |
@@ -18,7 +18,8 @@ This action is configured using environment variables defined in the workflow. T
 
 ## Authentication
 
-This GitHub Action uses [`cortextool`](https://github.com/grafana/cortex-tools) under the hood, `cortextool` uses HTTP Basic authentication against a Cortex cluster. The variable `CORTEX_TENANT_ID` is used as the username and `CORTEX_API_KEY` as the password.
+This GitHub Action uses [`mimirtool`](https://github.com/grafana/mimir) under the hood.
+`mimirtool` uses HTTP Basic authentication against a Mimir cluster. The variable `MIMIR_TENANT_ID` is used as the username and `MIMIR_API_KEY` as the password.
 
 ## Actions
 
@@ -26,26 +27,26 @@ All actions will crawl the specified `RULES_DIR` for Prometheus rules and alerts
 
 ### `diff`
 
-Outputs the differences in the configured files and the currently configured ruleset in a Cortex cluster. It will output the required operations in order to make the running Cortex cluster match the rules configured in the directory. It will **not create/update/delete any rules** currently running in the Cortex cluster.
+Outputs the differences in the configured files and the currently configured ruleset in a Mimir cluster. It will output the required operations in order to make the running Mimir cluster match the rules configured in the directory. It will **not create/update/delete any rules** currently running in the Mimir cluster.
 
 ### `sync`
 
-Reconcile the differences with the sourced rules and the rules currently running in a configured Cortex cluster. It **will create/update/delete rules** currently running in Cortex to match what is configured in the files in the provided directory.
+Reconcile the differences with the sourced rules and the rules currently running in a configured Mimir cluster. It **will create/update/delete rules** currently running in Mimir to match what is configured in the files in the provided directory.
 
 ### `lint`
 
-Lints a rules file(s). The linter's aim is not to verify correctness but to fix YAML and PromQL expression formatting within the rule file(s). The linting happens in-place within the specified file(s). Does not interact with your Cortex cluster.
+Lints a rules file(s). The linter's aim is not to verify correctness but to fix YAML and PromQL expression formatting within the rule file(s). The linting happens in-place within the specified file(s). Does not interact with your Mimir cluster.
 
 ### `prepare`
-Prepares a rules file(s) for upload to Cortex. It lints all your PromQL expressions and adds a `cluster` label to your PromQL query aggregations in the file. Prepare modifies the file(s) in-place. Does not interact with your Cortex cluster.
+Prepares a rules file(s) for upload to Mimir. It lints all your PromQL expressions and adds a `cluster` label to your PromQL query aggregations in the file. Prepare modifies the file(s) in-place. Does not interact with your Mimir cluster.
 
 ### `check`
 
-Checks rules file(s) against the recommended [best practices](https://prometheus.io/docs/practices/rules/) for rules. Does not interact with your Cortex cluster.
+Checks rules file(s) against the recommended [best practices](https://prometheus.io/docs/practices/rules/) for rules. Does not interact with your Mimir cluster.
 
 ### `print`
 
-fetch & print rules from the Cortex cluster.
+fetch & print rules from the Mimir cluster.
 
 ## Outputs
 
@@ -74,11 +75,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Diff Rules
         id: diff_rules
-        uses: grafana//cortex-rules-action@v0.1.1
+        uses: grafana/cortex-rules-action@v0.1.1
         env:
-          CORTEX_ADDRESS: https://example-cluster.com/
-          CORTEX_TENANT_ID: 1
-          CORTEX_API_KEY: ${{ secrets.CORTEX_API_KEY }} # Encrypted Github Secret https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets
+          MIMIR_ADDRESS: https://example-cluster.com/
+          MIMIR_TENANT_ID: 1
+          MIMIR_API_KEY: ${{ secrets.MIMIR_API_KEY }} # Encrypted Github Secret https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets
           ACTION: diff
           RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo
       - name: comment PR
@@ -91,7 +92,7 @@ jobs:
 
 ### Master Sync
 
-The following workflow will sync the rule files in the `master` branch with the configured Cortex cluster.
+The following workflow will sync the rule files in the `master` branch with the configured Mimir cluster.
 
 ```yaml
 name: sync_rules_master
@@ -108,11 +109,11 @@ jobs:
         with:
           ref: master
       - name: sync-rules
-        uses: grafana//cortex-rules-action@v0.1.1
+        uses: grafana/cortex-rules-action@v0.1.1
         env:
-          CORTEX_ADDRESS: https://example-cluster.com/
-          CORTEX_TENANT_ID: 1
-          CORTEX_API_KEY: ${{ secrets.CORTEX_API_KEY }} # Encrypted Github Secret https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets
+          MIMIR_ADDRESS: https://example-cluster.com/
+          MIMIR_TENANT_ID: 1
+          MIMIR_API_KEY: ${{ secrets.MIMIR_API_KEY }} # Encrypted Github Secret https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets
           ACTION: sync
           RULES_DIR: "./rules/" # In this example rules are stored in a rules directory in the repo
 ```

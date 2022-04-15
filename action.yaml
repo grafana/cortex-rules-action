@@ -1,6 +1,6 @@
-name: cortextool-sync
+name: mimirtool-sync
 author: jtlisi
-description: "A set of actions to interact with Prometheus Rules files and a Cortex cluster."
+description: "A set of actions to interact with Prometheus Rules files and a Grafana Mimir cluster."
 runs:
   using: "docker"
   image: "Dockerfile"
