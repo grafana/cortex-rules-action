@@ -28,6 +28,11 @@ SYNC_CMD=sync
 DIFF_CMD="diff"
 PRINT_CMD=print
 
+if [ -z "${BACKEND}" ]; then
+  echo "BACKEND not set, using 'cortex' as a default."
+  BACKEND="cortex"
+fi
+
 if [ -z "${RULES_DIR}" ]; then
   echo "RULES_DIR not set, using './' as a default."
   RULES_DIR="./"
@@ -41,28 +46,28 @@ fi
 case "${ACTION}" in
   "$SYNC_CMD")
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules sync --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} "$@")
+    OUTPUT=$(/usr/bin/cortextool rules sync --backend="${BACKEND}" --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} "$@")
     STATUS=$?
     ;;
   "$DIFF_CMD")
     verifyTenantAndAddress
-    OUTPUT=$(/usr/bin/cortextool rules diff --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} --disable-color "$@")
+    OUTPUT=$(/usr/bin/cortextool rules diff --backend="${BACKEND}" --rule-dirs="${RULES_DIR}" ${NAMESPACES:+ --namespaces=${NAMESPACES}} --disable-color "$@")
     STATUS=$?
     ;;
   "$LINT_CMD")
-    OUTPUT=$(/usr/bin/cortextool rules lint --rule-dirs="${RULES_DIR}" "$@")
+    OUTPUT=$(/usr/bin/cortextool rules lint --backend="${BACKEND}" --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   "$PREPARE_CMD")
-    OUTPUT=$(/usr/bin/cortextool rules prepare -i --rule-dirs="${RULES_DIR}" --label-excluded-rule-groups="${LABEL_EXCLUDED_RULE_GROUPS}" "$@")
+    OUTPUT=$(/usr/bin/cortextool rules prepare --backend="${BACKEND}" -i --rule-dirs="${RULES_DIR}" --label-excluded-rule-groups="${LABEL_EXCLUDED_RULE_GROUPS}" "$@")
     STATUS=$?
     ;;
   "$CHECK_CMD")
-    OUTPUT=$(/usr/bin/cortextool rules check --rule-dirs="${RULES_DIR}" "$@")
+    OUTPUT=$(/usr/bin/cortextool rules check --backend="${BACKEND}" --rule-dirs="${RULES_DIR}" "$@")
     STATUS=$?
     ;;
   "$PRINT_CMD")
-      OUTPUT=$(/usr/bin/cortextool rules print --disable-color "$@")
+      OUTPUT=$(/usr/bin/cortextool rules print --backend="${BACKEND}" --disable-color "$@")
       STATUS=$?
       ;;
   *)
