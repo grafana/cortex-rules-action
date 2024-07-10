@@ -76,8 +76,8 @@ case "${ACTION}" in
     ;;
 esac
 
-SINGLE_LINE_OUTPUT=$(echo "${OUTPUT}" | awk 'BEGIN { RS="" } { gsub(/%/, "%25"); gsub(/\r/, "%0D"); gsub(/\n/, "%0A") } { print }')
-echo "detailed=${SINGLE_LINE_OUTPUT}" >> "$GITHUB_OUTPUT"
+{ echo "detailed<<EOF"; echo "$OUTPUT"; echo "EOF"; } >> "$GITHUB_OUTPUT"
+
 SUMMARY=$(echo "${OUTPUT}" | grep Summary)
 echo "summary=${SUMMARY}" >> "$GITHUB_OUTPUT"
 
