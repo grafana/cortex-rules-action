@@ -7,7 +7,7 @@ jobs:
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
       with:
         persist-credentials: false
     - uses: azohra/shell-linter@6bbeaa868df09c34ddc008e6030cfe89c03394a1 # v0.6.0
